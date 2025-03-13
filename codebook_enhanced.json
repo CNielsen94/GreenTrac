@@ -1,0 +1,291 @@
+{
+    "submission_metadata": {
+      "country": "The name of the country or organization making the submission. Look for this information in a header, title, or table at the beginning of the document.",
+      "date": "The date when the submission was made, typically in a header or metadata section. Convert any date format to YYYY-MM-DD format.",
+      "type": "The type of entity making the submission. This could be labeled as 'Member State', 'Observer', or 'Organization'. Look for this information near the country name."
+    },
+    "objectives": {
+      "end_plastic_pollution": {
+        "mentioned": "Look for explicit statements about ending, eliminating, addressing, tackling, combating, preventing, or stopping plastic pollution as a primary goal or objective. Search for phrases like 'end plastic pollution', 'address plastic pollution', 'tackle the plastic crisis', etc.",
+        "timeframe_specified": "Check if there is a specific year, date, or timeline mentioned for when plastic pollution should be eliminated or significantly reduced. Look for phrases like 'by 2030', 'by 2040', 'within X years'.",
+        "timeframe": "If a timeframe is specified, capture the exact time target mentioned (e.g., 'by 2040', 'within 10 years', '2030-2050')."
+      },
+      "reduce_production": {
+        "mentioned": "Look for statements about decreasing, reducing, limiting, cutting, restricting, or controlling the production, manufacturing, or creation of plastic or specific plastic products. This should be distinct from waste reduction.",
+        "specification_provided": "Check if the document mentions specific percentage reductions, caps, or quantitative targets for reducing production.",
+        "specifications": "List any specific quantifiable reduction targets mentioned, such as '50% reduction by 2030', 'cap production at 2020 levels', 'phase out by 2040'."
+      },
+      "benefits_of_plastics": {
+        "mentioned": "Search for acknowledgments of plastic's positive contributions, utility, or necessity in certain contexts. This may include statements about why some plastic use should continue or references to essential uses.",
+        "benefits_listed": "Capture any specific benefits or essential uses mentioned, such as 'medical applications', 'food preservation', 'transportation safety', etc."
+      },
+      "protect_human_health": {
+        "mentioned": "Check for mentions of preserving, protecting, safeguarding, or addressing risks to human health, public health, or people's wellbeing in relation to plastic pollution.",
+        "details": "Capture specific health concerns or health protection measures mentioned, such as 'reducing exposure to toxins', 'preventing microplastic ingestion', etc."
+      },
+      "protect_biodiversity": {
+        "mentioned": "Look for mentions of ecosystem protection, biodiversity conservation, protecting wildlife, or similar environmental preservation goals related to plastic pollution.",
+        "marine_focus": "Determine if marine ecosystems, oceans, seas, or marine life are specifically highlighted for protection, as opposed to or in addition to terrestrial environments."
+      },
+      "lifecycle_approach": {
+        "mentioned": "Search for references to 'lifecycle', 'life cycle', 'cradle-to-grave', 'full chain', or similar concepts about addressing plastics at all stages of existence.",
+        "coverage": "Determine if the document covers the 'Full lifecycle' (including all production, use and disposal stages), 'Partial' (focusing on certain stages), or does not specify the extent."
+      },
+      "other_objectives": "Identify any other distinct objectives or goals not covered by the categories above. These might include economic development goals, circular economy goals, just transition objectives, etc."
+    },
+    "measures": {
+      "targets": {
+        "present": "Look for specific, measurable targets with concrete numbers, percentages, or deadlines. These could be reduction targets, recycling targets, collection targets, etc.",
+        "details": "List all quantitative targets mentioned with their metrics and deadlines, such as '90% collection rate by 2030', '50% recycled content by 2025', etc."
+      },
+      "economic_instruments": {
+        "tax_incentives": {
+          "mentioned": "Check for any tax-related measures including plastic taxes, carbon taxes, tax breaks, tax incentives, import/export duties, or similar fiscal measures that use taxation as a mechanism.",
+          "details": "List specific tax mechanisms mentioned, such as 'virgin plastic tax', 'import duties on plastic products', 'tax breaks for recycled content', etc."
+        },
+        "subsidies": {
+          "mentioned": "Look for mentions of subsidies, grants, financial support, reward systems, financial incentives, or removal of existing subsidies for plastic alternatives.",
+          "details": "List specific subsidy mechanisms mentioned, such as 'grants for recycling facilities', 'financial incentives for biodegradable alternatives', etc."
+        },
+        "penalties": {
+          "mentioned": "Check for financial penalties, fines, fees for non-compliance, pay-as-you-throw schemes, polluter-pays principle, or similar punitive financial measures.",
+          "details": "List specific penalty mechanisms mentioned, such as 'fines for improper disposal', 'fees for excessive packaging', 'polluter-pays schemes', etc."
+        },
+        "trading_systems": {
+          "mentioned": "Look for market-based instruments like emissions trading, plastic credits, tariffs, cap-and-trade systems, or similar trading mechanisms related to plastics.",
+          "details": "List specific trading mechanisms mentioned, such as 'plastic credit system', 'carbon trading for plastic production', 'tariffs on imported plastic', etc."
+        },
+        "deposit_systems": {
+          "mentioned": "Check for deposit-return schemes, container deposit legislation, bottle bills, or systems where consumers pay a deposit that is refunded when items are returned for recycling.",
+          "details": "List specific deposit system mechanisms mentioned, such as 'beverage container deposits', 'refundable packaging deposits', etc."
+        },
+        "public_procurement": {
+          "mentioned": "Look for government or public sector purchasing requirements, green procurement policies, or public sector market creation for sustainable alternatives.",
+          "details": "List specific procurement measures mentioned, such as 'government green purchasing requirements', 'public sector recycled content minimums', etc."
+        },
+        "rd_funding": {
+          "mentioned": "Check for research and development funding, innovation investments, or financial support for technological development in any part of the plastic value chain.",
+          "details": "List specific R&D funding mechanisms mentioned, such as 'innovation grants for plastic alternatives', 'research funding for recycling technology', etc."
+        }
+      },
+      "regulatory_instruments": {
+        "bans": {
+          "mentioned": "Look for prohibitions, bans, phase-outs, or eliminations of specific plastic products, materials, or additives. This includes both immediate and gradual bans.",
+          "details": "List specific ban proposals mentioned, such as 'ban on single-use plastics', 'phase-out of microbeads', 'elimination of PVC packaging', etc."
+        },
+        "moratoriums": {
+          "mentioned": "Check for temporary bans, pauses, or suspensions of specific activities for a defined time period, as opposed to permanent bans.",
+          "details": "List specific moratorium proposals mentioned, such as '5-year pause on new plastic production facilities', 'temporary halt on plastic waste exports', etc."
+        },
+        "performance_standards": {
+          "mentioned": "Look for product or material standards, specifications, criteria, requirements, or regulations that products must meet, including recyclability or durability standards.",
+          "details": "List specific standards mentioned, such as 'minimum recyclability requirements', 'durability standards for plastic products', 'packaging design criteria', etc."
+        },
+        "mandatory_infrastructure": {
+          "mentioned": "Check for required infrastructure development, facility establishment, or system creation to implement the treaty provisions, especially for waste collection and recycling.",
+          "details": "List specific infrastructure requirements mentioned, such as 'separate collection systems', 'recycling facility requirements', 'waste sorting infrastructure', etc."
+        },
+        "certification": {
+          "mentioned": "Look for mandatory product or process certification, approval schemes, or verification systems that control what types of plastics can be produced or traded.",
+          "details": "List specific certification requirements mentioned, such as 'eco-certification for plastic products', 'verification schemes for recycled content', etc."
+        },
+        "labelling": {
+          "mentioned": "Check for required product labels, marking, or information disclosure about plastic composition, recyclability, proper disposal, or environmental impact.",
+          "details": "List specific labeling requirements mentioned, such as 'recyclability labels', 'plastic content disclosure', 'disposal instruction requirements', etc."
+        },
+        "action_plans": {
+          "mentioned": "Look for required plans, strategies, or roadmaps that countries or entities must develop to implement the treaty, such as National Action Plans (NAPs).",
+          "details": "List specific action plan requirements mentioned, such as 'National Plastic Action Plans', 'corporate plastic reduction strategies', etc."
+        },
+        "reporting": {
+          "mentioned": "Check for mandatory reporting, data submission, disclosure requirements, or information sharing about implementation progress or plastic-related activities.",
+          "details": "List specific reporting requirements mentioned, such as 'annual implementation reports', 'plastic production disclosure', 'waste management statistics', etc."
+        },
+        "trade_requirements": {
+          "mentioned": "Look for measures affecting international trade of plastic or plastic products, such as import/export restrictions, quotas, or notification requirements.",
+          "details": "List specific trade requirements mentioned, such as 'plastic waste export restrictions', 'import controls on certain polymers', 'notification for hazardous plastic trade', etc."
+        },
+        "epr": {
+          "mentioned": "Check for Extended Producer Responsibility schemes, which make producers responsible for the post-consumer stage of their products, including take-back schemes.",
+          "details": "List specific EPR measures mentioned, such as 'mandatory take-back programs', 'producer-funded recycling schemes', 'product stewardship requirements', etc."
+        },
+        "just_transition": {
+          "mentioned": "Look for provisions addressing the social impact of the transition, particularly for vulnerable groups like waste pickers or communities dependent on plastic industries.",
+          "details": "List specific just transition measures mentioned, such as 'integration of informal waste pickers', 'support for affected communities', 'job transition programs', etc."
+        }
+      },
+      "soft_instruments": {
+        "voluntary_certification": {
+          "mentioned": "Check for optional or non-mandatory certification programs, eco-labels, or verification schemes that entities can choose to adopt.",
+          "details": "List specific voluntary certification proposals mentioned, such as 'optional eco-certification schemes', 'voluntary product verification', etc."
+        },
+        "voluntary_labelling": {
+          "mentioned": "Look for optional product labeling schemes or non-mandatory information disclosure that entities can choose to implement.",
+          "details": "List specific voluntary labeling schemes mentioned, such as 'optional recyclability labeling', 'voluntary environmental impact disclosure', etc."
+        },
+        "monitoring": {
+          "mentioned": "Check for systems to track, observe, measure, assess, or evaluate plastic pollution, material flows, or policy effectiveness.",
+          "details": "List specific monitoring measures mentioned, such as 'plastic pollution monitoring programs', 'marine litter surveys', 'policy impact assessments', etc."
+        },
+        "information_guidance": {
+          "mentioned": "Look for guidelines, toolkits, best practices, or informational resources provided to help stakeholders implement effective measures.",
+          "details": "List specific information/guidance measures mentioned, such as 'best practice guidelines', 'implementation toolkits', 'technical guidance documents', etc."
+        },
+        "education": {
+          "mentioned": "Check for awareness-raising campaigns, public education initiatives, school programs, or other efforts to inform the public about plastic pollution.",
+          "details": "List specific education/awareness initiatives mentioned, such as 'school curriculum development', 'public awareness campaigns', 'consumer education programs', etc."
+        },
+        "expert_groups": {
+          "mentioned": "Look for the establishment of scientific committees, technical panels, advisory groups, or expert bodies to provide guidance on implementing the treaty.",
+          "details": "List specific expert group proposals mentioned, such as 'scientific advisory committee', 'technical expert panel', 'multi-stakeholder advisory body', etc."
+        },
+        "research_promotion": {
+          "mentioned": "Check for encouragement of scientific research, innovation, or knowledge development without specific funding commitments.",
+          "details": "List specific research promotion measures mentioned, such as 'promoting plastic alternatives research', 'encouraging recycling innovation', etc."
+        },
+        "harmonization": {
+          "mentioned": "Look for efforts to standardize, align, or make consistent the approaches, definitions, methodologies, or systems across countries or stakeholders.",
+          "details": "List specific harmonization proposals mentioned, such as 'harmonized monitoring methodologies', 'standardized plastic definitions', 'aligned reporting formats', etc."
+        },
+        "knowledge_sharing": {
+          "mentioned": "Check for mechanisms to exchange information, best practices, technology, or expertise among countries or stakeholders to build capacity.",
+          "details": "List specific knowledge sharing initiatives mentioned, such as 'best practice exchanges', 'technology transfer mechanisms', 'information clearing house', etc."
+        }
+      }
+    },
+    "value_chain": {
+      "upstream": {
+        "feedstock": {
+          "mentioned": "Look for measures addressing raw materials used in plastic production, such as virgin plastic, biomass, or recycled content requirements.",
+          "details": "List specific feedstock-related measures mentioned, such as 'recycled content requirements', 'virgin plastic reduction', 'biobased material promotion', etc."
+        },
+        "production": {
+          "mentioned": "Check for measures addressing the manufacturing or creation process of plastic materials or the polymer production stage.",
+          "details": "List specific production-related measures mentioned, such as 'production caps', 'clean production requirements', 'polymerization process standards', etc."
+        }
+      },
+      "midstream": {
+        "design": {
+          "mentioned": "Look for measures addressing how plastic products are designed, including eco-design principles, design for recyclability, or durability requirements.",
+          "details": "List specific design-related measures mentioned, such as 'design for recyclability requirements', 'modular design promotion', 'durability standards', etc."
+        },
+        "product_production": {
+          "mentioned": "Check for measures addressing the manufacturing of plastic products (as opposed to the plastic material itself).",
+          "microplastics_addressed": "Determine if the document specifically addresses intentionally added microplastics in products, such as in cosmetics or cleaning products.",
+          "chemicals_addressed": "Determine if the document specifically addresses chemical additives in plastics, such as plasticizers, flame retardants, or stabilizers.",
+          "details": "List specific product production-related measures mentioned, such as 'chemical additive restrictions', 'microplastic ban in products', 'manufacturing standards', etc."
+        },
+        "distribution": {
+          "mentioned": "Look for measures addressing the transportation, supply chain, or distribution phase of plastic products before they reach consumers.",
+          "details": "List specific distribution-related measures mentioned, such as 'packaging optimization for transport', 'supply chain traceability requirements', etc."
+        },
+        "consumption": {
+          "mentioned": "Check for measures addressing consumer use, consumer behavior, or the consumption phase of plastic products.",
+          "single_use_addressed": "Determine if the document specifically addresses single-use or disposable plastic products or packaging.",
+          "details": "List specific consumption-related measures mentioned, such as 'reusable product promotion', 'single-use plastic reduction', 'consumer use guidelines', etc."
+        }
+      },
+      "downstream": {
+        "collection": {
+          "mentioned": "Look for measures addressing the collection, gathering, or aggregation of plastic waste after consumer use.",
+          "details": "List specific collection-related measures mentioned, such as 'separate collection systems', 'municipal waste collection requirements', 'take-back schemes', etc."
+        },
+        "waste_management": {
+          "mentioned": "Check for measures addressing the handling, processing, or management of plastic waste after collection.",
+          "details": "List specific waste management measures mentioned, such as 'waste treatment standards', 'landfill restrictions for plastics', 'waste sorting requirements', etc."
+        },
+        "recycling": {
+          "mentioned": "Look for measures specifically addressing the recycling, reprocessing, or recovery of plastic materials from waste.",
+          "details": "List specific recycling-related measures mentioned, such as 'recycling facility standards', 'chemical recycling promotion', 'recycling rate targets', etc."
+        },
+        "legacy_plastic": {
+          "mentioned": "Check for measures addressing existing plastic pollution in the environment or cleaning up already-polluted areas.",
+          "details": "List specific legacy plastic measures mentioned, such as 'beach cleanup initiatives', 'environmental remediation requirements', 'marine litter removal', etc."
+        }
+      },
+      "cross_value_chain": {
+        "emissions": {
+          "mentioned": "Look for measures addressing greenhouse gas emissions, air pollution, or other releases associated with the plastic lifecycle.",
+          "details": "List specific emission-related measures mentioned, such as 'carbon footprint reduction', 'air pollution controls for production', 'incineration emission standards', etc."
+        },
+        "microplastic_leakage": {
+          "mentioned": "Check for measures addressing the unintentional release of microplastics into the environment, such as from tire wear, textile washing, or plastic degradation.",
+          "details": "List specific microplastic-related measures mentioned, such as 'microfiber filters on washing machines', 'tire wear reduction measures', 'microplastic monitoring', etc."
+        }
+      }
+    },
+    "implementation": {
+      "timeframe": {
+        "specified": "Check if the document mentions specific time periods, deadlines, timelines, or schedules for implementing various measures or achieving objectives.",
+        "details": "Describe the implementation timeline mentioned, such as 'phased approach over 10 years', 'immediate entry into force with 5-year review', etc."
+      },
+      "stringency": {
+        "level": "Assess whether the document proposes a 'High' level of stringency (strict, legally binding, with enforcement), 'Low' (flexible, voluntary, or minimal enforcement), or is 'Not specified'.",
+        "details": "Describe enforcement or compliance measures mentioned, such as 'compliance committee', 'sanctions for non-compliance', 'binding obligations', etc."
+      },
+      "scale": {
+        "scope": "Determine whether the implementation is primarily 'Global' (international treaty), 'National' (country-level), or 'Sub-national' (regional, local) in scope.",
+        "details": "Describe the implementation scale mentioned, such as 'global treaty with national implementation', 'coordinated regional approach', etc."
+      }
+    },
+    "financing": {
+      "sources": {
+        "private_sector": {
+          "mentioned": "Look for mentions of financing, investments, or funding from businesses, corporations, or the private sector.",
+          "details": "List specific private sector financing mechanisms mentioned, such as 'corporate investments in recycling', 'industry-funded innovation', 'private sector contributions', etc."
+        },
+        "state": {
+          "mentioned": "Check for mentions of financing, funding, or budgetary allocations from national governments or public sources.",
+          "details": "List specific public financing mechanisms mentioned, such as 'national budget allocations', 'public funding for infrastructure', 'government grants', etc."
+        },
+        "international": {
+          "mentioned": "Look for mentions of financing from international sources such as development banks, multilateral funds, or international organizations.",
+          "details": "List specific international financing mechanisms mentioned, such as 'multilateral development bank funding', 'GEF support', 'international donor contributions', etc."
+        },
+        "fees_taxes": {
+          "mentioned": "Check for financing derived from fees, levies, taxes, or charges specifically dedicated to addressing plastic pollution.",
+          "details": "List specific fee/tax financing mechanisms mentioned, such as 'plastic tax revenue allocation', 'waste management fees', 'import levies', etc."
+        },
+        "credit_schemes": {
+          "mentioned": "Look for financing through credit mechanisms, bonds, loans, or similar financial instruments.",
+          "details": "List specific credit mechanisms mentioned, such as 'blue bonds for ocean plastic reduction', 'green loans for recycling', 'plastic credits', etc."
+        },
+        "voluntary": {
+          "mentioned": "Check for voluntary financial contributions, donations, philanthropic funding, or similar non-mandatory financial support.",
+          "details": "List specific voluntary financing mechanisms mentioned, such as 'philanthropic contributions', 'voluntary industry funding', 'crowdfunding initiatives', etc."
+        }
+      }
+    },
+    "responsibilities": {
+      "actors": {
+        "production_sector": {
+          "mentioned": "Look for responsibilities, obligations, or roles assigned to plastic producers, manufacturers, or companies that make plastic products.",
+          "details": "List specific producer responsibilities mentioned, such as 'design for recyclability', 'take-back obligations', 'recycled content targets', etc."
+        },
+        "consumers": {
+          "mentioned": "Check for responsibilities, obligations, or roles assigned to individual consumers or the general public regarding plastic use or disposal.",
+          "details": "List specific consumer responsibilities mentioned, such as 'proper waste sorting', 'reusable product adoption', 'conscious consumption', etc."
+        },
+        "waste_management": {
+          "mentioned": "Look for responsibilities, obligations, or roles assigned to waste management entities, recyclers, or those handling plastic after consumer use.",
+          "details": "List specific waste sector responsibilities mentioned, such as 'separate collection implementation', 'recycling quality standards', 'landfill restrictions', etc."
+        },
+        "informal_sector": {
+          "mentioned": "Check for mentions of or roles for the informal waste sector, waste pickers, or informal recyclers in the plastic management system.",
+          "details": "List specific informal sector roles mentioned, such as 'waste picker integration', 'informal recycler cooperatives', 'social protection for waste workers', etc."
+        },
+        "government": {
+          "mentioned": "Look for responsibilities, obligations, or roles assigned to national governments, regulatory authorities, or public agencies.",
+          "details": "List specific government responsibilities mentioned, such as 'policy implementation', 'regulatory oversight', 'enforcement duties', etc."
+        },
+        "ngos": {
+          "mentioned": "Check for roles or responsibilities assigned to non-governmental organizations, civil society, or advocacy groups.",
+          "details": "List specific NGO roles mentioned, such as 'monitoring implementation', 'awareness campaigns', 'stakeholder engagement', etc."
+        },
+        "un_system": {
+          "mentioned": "Look for roles or responsibilities assigned to UN agencies, international bodies, treaty secretariats, or similar international governance entities.",
+          "details": "List specific UN system roles mentioned, such as 'secretariat functions', 'technical assistance provision', 'coordination of international efforts', etc."
+        }
+      }
+    }
+  }
