@@ -1,3 +1,5 @@
+codebook_enhanced.json is the file containing the codebook comments/definitions. The other codebook inside the app folder is just a template for the LLM to follow, so please do not change that.
+
 # Plastic Pollution Treaty Coding Validation Report
 
 This report compares coded values from 11 country submissions with agreement scores.
