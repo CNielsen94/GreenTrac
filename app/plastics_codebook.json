@@ -1,0 +1,291 @@
+{
+  "submission_metadata": {
+    "country": "",
+    "date": "",
+    "type": ""
+  },
+  "objectives": {
+    "end_plastic_pollution": {
+      "mentioned": null,
+      "timeframe_specified": null,
+      "timeframe": ""
+    },
+    "reduce_production": {
+      "mentioned": null,
+      "specification_provided": null,
+      "specifications": []
+    },
+    "benefits_of_plastics": {
+      "mentioned": null,
+      "benefits_listed": []
+    },
+    "protect_human_health": {
+      "mentioned": null,
+      "details": ""
+    },
+    "protect_biodiversity": {
+      "mentioned": null,
+      "marine_focus": null
+    },
+    "lifecycle_approach": {
+      "mentioned": null,
+      "coverage": ""
+    },
+    "other_objectives": []
+  },
+  "measures": {
+    "targets": {
+      "present": null,
+      "details": []
+    },
+    "economic_instruments": {
+      "tax_incentives": {
+        "mentioned": null,
+        "details": []
+      },
+      "subsidies": {
+        "mentioned": null,
+        "details": []
+      },
+      "penalties": {
+        "mentioned": null,
+        "details": []
+      },
+      "trading_systems": {
+        "mentioned": null,
+        "details": []
+      },
+      "deposit_systems": {
+        "mentioned": null,
+        "details": []
+      },
+      "public_procurement": {
+        "mentioned": null,
+        "details": []
+      },
+      "rd_funding": {
+        "mentioned": null,
+        "details": []
+      }
+    },
+    "regulatory_instruments": {
+      "bans": {
+        "mentioned": null,
+        "details": []
+      },
+      "moratoriums": {
+        "mentioned": null,
+        "details": []
+      },
+      "performance_standards": {
+        "mentioned": null,
+        "details": []
+      },
+      "mandatory_infrastructure": {
+        "mentioned": null,
+        "details": []
+      },
+      "certification": {
+        "mentioned": null,
+        "details": []
+      },
+      "labelling": {
+        "mentioned": null,
+        "details": []
+      },
+      "action_plans": {
+        "mentioned": null,
+        "details": []
+      },
+      "reporting": {
+        "mentioned": null,
+        "details": []
+      },
+      "trade_requirements": {
+        "mentioned": null,
+        "details": []
+      },
+      "epr": {
+        "mentioned": null,
+        "details": []
+      },
+      "just_transition": {
+        "mentioned": null,
+        "details": []
+      }
+    },
+    "soft_instruments": {
+      "voluntary_certification": {
+        "mentioned": null,
+        "details": []
+      },
+      "voluntary_labelling": {
+        "mentioned": null,
+        "details": []
+      },
+      "monitoring": {
+        "mentioned": null,
+        "details": []
+      },
+      "information_guidance": {
+        "mentioned": null,
+        "details": []
+      },
+      "education": {
+        "mentioned": null,
+        "details": []
+      },
+      "expert_groups": {
+        "mentioned": null,
+        "details": []
+      },
+      "research_promotion": {
+        "mentioned": null,
+        "details": []
+      },
+      "harmonization": {
+        "mentioned": null,
+        "details": []
+      },
+      "knowledge_sharing": {
+        "mentioned": null,
+        "details": []
+      }
+    }
+  },
+  "value_chain": {
+    "upstream": {
+      "feedstock": {
+        "mentioned": null,
+        "details": []
+      },
+      "production": {
+        "mentioned": null,
+        "details": []
+      }
+    },
+    "midstream": {
+      "design": {
+        "mentioned": null,
+        "details": []
+      },
+      "product_production": {
+        "mentioned": null,
+        "microplastics_addressed": null,
+        "chemicals_addressed": null,
+        "details": []
+      },
+      "distribution": {
+        "mentioned": null,
+        "details": []
+      },
+      "consumption": {
+        "mentioned": null,
+        "single_use_addressed": null,
+        "details": []
+      }
+    },
+    "downstream": {
+      "collection": {
+        "mentioned": null,
+        "details": []
+      },
+      "waste_management": {
+        "mentioned": null,
+        "details": []
+      },
+      "recycling": {
+        "mentioned": null,
+        "details": []
+      },
+      "legacy_plastic": {
+        "mentioned": null,
+        "details": []
+      }
+    },
+    "cross_value_chain": {
+      "emissions": {
+        "mentioned": null,
+        "details": []
+      },
+      "microplastic_leakage": {
+        "mentioned": null,
+        "details": []
+      }
+    }
+  },
+  "implementation": {
+    "timeframe": {
+      "specified": null,
+      "details": ""
+    },
+    "stringency": {
+      "level": "",
+      "details": ""
+    },
+    "scale": {
+      "scope": [],
+      "details": ""
+    }
+  },
+  "financing": {
+    "sources": {
+      "private_sector": {
+        "mentioned": null,
+        "details": []
+      },
+      "state": {
+        "mentioned": null,
+        "details": []
+      },
+      "international": {
+        "mentioned": null,
+        "details": []
+      },
+      "fees_taxes": {
+        "mentioned": null,
+        "details": []
+      },
+       "credit_schemes": {
+        "mentioned": null,
+        "details": []
+      },
+       "voluntary": {
+        "mentioned": null,
+        "details": []
+      }
+    }
+  },
+  "responsibilities": {
+    "actors": {
+      "production_sector": {
+        "mentioned": null,
+        "details": []
+      },
+      "consumers": {
+        "mentioned": null,
+        "details": []
+      },
+      "waste_management": {
+        "mentioned": null,
+        "details": []
+      },
+       "informal_sector": {
+        "mentioned": null,
+        "details": []
+      },
+      "government": {
+        "mentioned": null,
+        "details": []
+      },
+      "ngos": {
+        "mentioned": null,
+        "details": []
+      },
+      "un_system": {
+        "mentioned": null,
+        "details": []
+      }
+    }
+  }
+}
