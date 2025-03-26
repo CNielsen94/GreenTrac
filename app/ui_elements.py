@@ -1,4 +1,11 @@
 import streamlit as st
+import numpy as np
+from IRR_pipeline import process_json_files
+import seaborn as sns
+import re
+import traceback
+import matplotlib.pyplot as plt
+from pathlib import Path
 import os
 import json
 import pandas as pd
@@ -11,12 +18,15 @@ from utils import (
     create_zip_from_results, ensure_folders_exist, get_default_api_key,
     DEFAULT_CODEBOOK_URL
 )
+
+from irr_analysis import run_irr_analysis_for_streamlit
 from gemini_calls import analyze_pdf_file
 
 # Directory setup
 DOCS_FOLDER = "docs"     # Folder containing PDF files to analyze
 AUDIO_FOLDER = "audio"   # Folder containing MP3 files
 LYRICS_FOLDER = "lyrics" # Folder containing lyric files
+RESULTS_FOLDER = "results"
 
 def render_sidebar():
     """Render the application sidebar with configuration options."""
@@ -62,7 +72,7 @@ def render_sidebar():
             "Gemini API Key", 
             value=display_value,
             type="password",
-            help="Enter your Google Gemini API key. You can also store it in a .env file."
+            help="Enter your Google Gemini API key (NOT YET IMPLEMENTED)"
         )
         
         # Only update if the user has actually entered something
@@ -127,29 +137,38 @@ def render_how_to_tab():
     st.header("How to Use the Qualitative Coding Tool")
     
     st.markdown("""
-    This interface helps researchers test and refine codebook definitions for qualitative coding. Here's how to use each part of the application:
+    This super duper cool interface helps researchers test and refine codebook definitions for qualitative coding, with a twist of entertainment. Here's how to use the application:
     
     ### Workflow Overview
     
-    1. **Prepare Files**: Place PDF documents to analyze in the `docs` folder
-    2. **Process Documents**: Use batch processing for multiple documents or individual processing for testing
-    3. **Review Results**: Examine output in the Results tab
+    1. **Prepare codebook**: Just simply go to the github repository and edit the codebook_enhanced.json there
+    2. **Synchronize GitHub Codebook**: On the left you'll see a button "Refresh Codebook from GitHub". Press it to synchronize - you should see a message pop up underneath the button.
+    3. **File processing**: This is just a testing feature for the backend pipeline logic, you can ignore this for now. It will likely be removed later.
+    2. **Batch processing Documents**: Use batch processing for multiple documents
+    3. **Review Results**: Examine output in the Results tab, and perform IRR calculations in the IRR analysis tab.
+                
+        - The main difference here is the results tab give you the raw JSONs for each submission for review
+
+        - IRR analysis tab gives you the aggregated metric results from the analysis, as well as some visuals
+
     4. **Refine Codebook**: Make changes to codebook comments and reprocess as needed
+        - This can be done either directly in the interface (hopefully it should work, haven't tested it)
+        - Or via the github repository (this definitely works, simply use the synchronize button as described earlier)
     
-    ### API Key Configuration
+    ### API Key Configuration 
+    (**IGNORE THIS API-KEY SETUP, THIS ISN'T IMPLEMENTED CORRECTLY YET - THERE IS A DEFAULT KEY ALREADY ACTIVE, JUST RUN THE REST**)
     
-    This tool uses Google's Gemini API to analyze PDF documents. You have multiple options for setting the API key:
+    This tool uses Google's Gemini API to analyze PDF documents:
     
     1. **Enter in the sidebar**: Type your API key in the sidebar field (temporary, for this session only)
-    2. **Create a .env file**: Add a file named `.env` with the line `GOOGLE_API_KEY=your_key_here` 
-    3. **Set environment variable**: Run `export GOOGLE_API_KEY=your_key_here` before starting the app
     
     You can obtain a Gemini API key from [Google AI Studio](https://makersuite.google.com/)
     
     ### GitHub Integration
     
-    The codebook comments file (`codebook_finetune.json`) can be synchronized with a GitHub repository:
-    
+    The codebook comments file can be synchronized with a GitHub repository (Default is GreenTrack, no need to enter it):
+                
+    (**You can ignore this for now - this is just placeholder functionality. Just use the button without entering anything**)
     1. Enable GitHub integration in the sidebar
     2. Enter the raw URL to the GitHub version of the file
     3. Click "Fetch from GitHub" to update your local version
@@ -157,12 +176,14 @@ def render_how_to_tab():
     
     ### Batch Processing (Recommended)
     
+    (**The zip download hasn't been tested, but should work**)            
+
     For processing multiple documents at once:
     
     1. Go to the "Batch Processing" tab
-    2. Review the list of available PDF files
+    2. You can review the list of available PDF files
     3. Click "Process All Files" to analyze the entire set
-    4. When complete, download a ZIP of all results or review individual files in the Results tab
+    4. When complete, you can download a ZIP of all results or review individual files in the Results tab
     
     ### Reviewing Results
     
@@ -170,7 +191,8 @@ def render_how_to_tab():
     
     1. Select a processed file from the dropdown 
     2. Choose between Raw JSON view (complete data) or Tabular View (formatted for readability)
-    3. Download results for further analysis
+    3. Download results for further analysis if desired
+    4. The IRR analysis tab provides with a better overview of the aggregated results, and agreement percentages
     
     ### Editing the Codebook
     
@@ -180,11 +202,13 @@ def render_how_to_tab():
     2. Modify the descriptions in the JSON editor
     3. Click "Save Changes" to update the file
     4. Return to Processing tabs to test the changes
-    
-    ### Future Features
-    
-    - IRR (Inter-Rater Reliability) metrics will be added in a future update
-    - Enhanced visualization options for results
+    5. Let me know if this is broken, as I realize this will probably be easier to manage
+                
+    ### Future stuff:
+    1. **Fix versioning logic** - currently we don't save between runs, so please download and maintain the codebook definitions as they run for now.
+                I will try to sort out the logic asap
+    2. Add a feedback mechanism for users (you lovely folk) to provide quicker feedback for updates
+    3. Remove unused code categories - these are just an artifact of earlier experiments
     """)
 
 def render_file_processing_tab():
@@ -570,3 +594,282 @@ def render_audio_player_tab():
         <small>These tracks are for entertainment purposes and are related to the research themes.</small>
     </div>
     """, unsafe_allow_html=True)
+
+def render_results_viewer_tab():
+    """Render the results viewer tab."""
+    st.header("Results Viewer")
+    
+    st.info("""
+    After processing files, use this tab to review the results.
+    Select a file from the dropdown and choose your preferred view mode.
+    You can download individual results as JSON files for further analysis.
+    """, icon="ℹ️")
+    
+    if not st.session_state.processed_files:
+        st.info("No files have been processed yet. Use the 'File Processing' or 'Batch Processing' tab to analyze files.")
+    else:
+        # File selector
+        selected_file = st.selectbox(
+            "Select a processed file to view",
+            st.session_state.processed_files,
+            index=None,
+            placeholder="Choose a file..."
+        )
+        
+        if selected_file and selected_file in st.session_state.results:
+            st.subheader(f"Results for {selected_file}")
+            
+            # View options
+            view_mode = st.radio(
+                "View Mode",
+                ["Raw JSON", "Tabular View"],
+                horizontal=True
+            )
+            
+            result = st.session_state.results[selected_file]
+            
+            if view_mode == "Raw JSON":
+                st.json(result)
+                
+            elif view_mode == "Tabular View":
+                # Create tabular view using DataFrame
+                df = create_dataframe_from_json(result)
+                if df is not None:
+                    st.dataframe(df, use_container_width=True)
+                else:
+                    st.error("Could not create tabular view. Showing raw JSON instead.")
+                    st.json(result)
+            
+            # Download button
+            st.download_button(
+                label="Download Results",
+                data=json.dumps(result, indent=2, ensure_ascii=False),
+                file_name=f"{os.path.splitext(selected_file)[0]}_codebook.json",
+                mime="application/json"
+            )
+
+def render_irr_analysis_tab():
+    """Render the IRR Analysis tab."""
+    st.header("IRR Analysis")
+
+    st.info("""
+    This tab runs Inter-Rater Reliability (IRR) analysis between LLM results and NVivo coding reference data.
+
+    **Input Requirements:**
+    1. **NVivo Data File:** Place your NVivo export file (CSV or Excel) named `nvivo_export.csv` in the main application directory (next to `app.py`).
+    2. **LLM Processed JSON Files:** Ensure you have processed PDF documents using the 'File Processing' or 'Batch Processing' tabs. The resulting `_codebook.json` files should be located in the `docs` folder.
+
+    The analysis uses Gwet's AC1 coefficient to measure agreement.
+    """, icon="ℹ️")
+
+    # Create output directory if it doesn't exist
+    os.makedirs(RESULTS_FOLDER, exist_ok=True)
+
+    # Check for required files
+    nvivo_path = os.path.join("nvivo_export.csv")  # Path to existing NVivo file
+    nvivo_exists = os.path.exists(nvivo_path)
+
+    # Find all processed JSON files in docs folder
+    json_files = []
+    if os.path.exists(DOCS_FOLDER):
+        for file in os.listdir(DOCS_FOLDER):
+            if file.endswith("_codebook.json"):
+                json_files.append(os.path.join(DOCS_FOLDER, file)) # Get full path
+
+    # Status indicators
+    st.subheader("Data Status")
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+        st.markdown("### NVivo Reference Data")
+        if nvivo_exists:
+            st.success(f"✅ NVivo reference data found at `{nvivo_path}`")
+        else:
+            st.error(f"❌ NVivo reference data missing. Expected at `{nvivo_path}` in the application root directory.")
+
+    with col2:
+        st.markdown("### LLM Processed Data")
+
+        # Check if any JSON files were found
+        if not json_files:
+            st.warning("⚠️ No processed JSON files found in `docs` folder")
+            st.info("Use the 'File Processing' or 'Batch Processing' tab to analyze files first.")
+        else:
+            st.success(f"✅ Found {len(json_files)} processed JSON files in `docs` folder.")
+            with st.expander("View processed files"):
+                for file in json_files:
+                    st.write(f"- {os.path.basename(file)}") # Just show filename
+
+    # Run IRR analysis button - only if we have the NVivo data and at least one processed file
+    should_run_analysis = False
+    if nvivo_exists and json_files:
+        should_run_analysis = st.button("Run IRR Analysis", key="run_irr_button")
+
+        if should_run_analysis:
+            if not json_files: # Double check in case files were removed since last check
+                st.error("No processed JSON files found in 'docs' folder. Cannot run IRR analysis.")
+            else:
+                with st.spinner("Preparing LLM data and running IRR analysis..."):
+                    try:
+                        # 1. Process JSON files into a DataFrame
+                        llm_data_df = process_json_files(json_files) # Use your existing function
+
+                        if llm_data_df.empty:
+                            st.error("Could not process JSON files into a usable DataFrame for IRR analysis.")
+                            irr_results = None # Indicate failure
+                        else:
+                            # 2. Save DataFrame to a temporary CSV file
+                            temp_llm_csv_path = os.path.join(RESULTS_FOLDER, "temp_llm_data.csv")
+                            llm_data_df.to_csv(temp_llm_csv_path, index=False)
+
+                            # 3. Run IRR analysis using the temporary CSV file
+                            irr_results = run_irr_analysis_for_streamlit( # Now correctly calling streamlit version
+                                llm_data_path=temp_llm_csv_path, # Pass path to the temp CSV
+                                nvivo_data_path=nvivo_path,
+                                output_dir=RESULTS_FOLDER
+                            )
+                            # Clean up temporary CSV (optional, but good practice)
+                            # os.remove(temp_llm_csv_path) # Commented out for debugging - you can uncomment later
+
+                        if irr_results:
+                            # Store results in session state
+                            st.session_state.irr_analysis = irr_results
+
+                            st.success("IRR analysis completed successfully!")
+                            # ... (rest of the result display logic - summary, visualizations, table, download - remains largely the same as before)
+                            # ... (adjustments might be needed based on changes in run_irr_analysis_for_streamlit output if you made big changes)
+                            # Show a summary of the results
+                            st.subheader("Summary of IRR Analysis")
+
+                            # Display summary metrics
+                            if 'summary_data' in irr_results:
+                                summary_data = irr_results['summary_data']
+                                st.markdown("### Agreement Quality")
+
+                                # Create metrics in a row
+                                cols = st.columns(4)
+                                with cols[0]:
+                                    st.metric("Total Categories", summary_data['Total Categories'])
+                                with cols[1]:
+                                    st.metric("Excellent Agreement", summary_data['Excellent Agreement (AC1 ≥ 0.8)'])
+                                with cols[2]:
+                                    st.metric("Good Agreement", summary_data['Good Agreement (0.6 ≤ AC1 < 0.8)'])
+                                with cols[3]:
+                                    avg_ac1 = summary_data.get('Average AC1 Score')
+                                    if avg_ac1:
+                                        st.metric("Average AC1", f"{avg_ac1:.2f}")
+                                    else:
+                                        st.metric("Average AC1", "N/A")
+
+                            # Display visualizations
+                            if 'fig_data' in irr_results:
+                                st.subheader("Visualizations")
+
+                                tabs = st.tabs(["AC1 by Category", "Coding Prevalence", "Percent Agreement"])
+
+                                with tabs[0]:
+                                    if 'ac1_by_category' in irr_results['fig_data']:
+                                        st.image(irr_results['fig_data']['ac1_by_category'])
+
+                                with tabs[1]:
+                                    if 'coding_prevalence' in irr_results['fig_data']:
+                                        st.image(irr_results['fig_data']['coding_prevalence'])
+
+                                with tabs[2]:
+                                    if 'percent_agreement' in irr_results['fig_data']:
+                                        st.image(irr_results['fig_data']['percent_agreement'])
+
+                            # Display detailed results table
+                            if 'report_df' in irr_results:
+                                st.subheader("Detailed Results")
+                                st.dataframe(irr_results['report_df'], use_container_width=True)
+
+                            # Download buttons for results
+                            if 'report_path' in irr_results and os.path.exists(irr_results['report_path']):
+                                st.download_button(
+                                    label="Download Report (Excel)",
+                                    data=open(irr_results['report_path'], "rb").read(),
+                                    file_name="irr_analysis_report.xlsx",
+                                    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                                )
+                        else:
+                            st.error("IRR Analysis Failed: `run_irr_analysis_for_streamlit` returned None. Check error messages above for details.")
+
+                    except Exception as e:
+                        st.error(f"Error preparing LLM data or running IRR analysis: {str(e)}")
+                        st.error(f"Details: {traceback.format_exc()}")
+                        irr_results = None # Ensure irr_results is None in case of exception
+
+    elif not nvivo_exists:
+        st.warning("NVivo reference data not found. Please check the file path.")
+    elif not json_files:
+        st.warning("No processed JSON files found. Process some files first before running analysis.")
+
+    # Show previous results if available, but only if last analysis was successful
+    if 'irr_analysis' in st.session_state and st.session_state.irr_analysis is not None and not should_run_analysis and st.session_state.irr_analysis: # Added check for non-None irr_analysis
+        st.subheader("Previous IRR Analysis Results")
+
+        irr_results = st.session_state.irr_analysis
+
+        if irr_results: # Check again if irr_results is not None before proceeding
+            # Display summary metrics
+            if 'summary_data' in irr_results:
+                summary_data = irr_results['summary_data']
+                st.markdown("### Agreement Quality")
+
+                # Create metrics in a row
+                cols = st.columns(4)
+                with cols[0]:
+                    st.metric("Total Categories", summary_data.get('Total Categories', 'N/A'))
+                with cols[1]:
+                    st.metric("Excellent Agreement", summary_data.get('Excellent Agreement (AC1 ≥ 0.8)', 'N/A'))
+                with cols[2]:
+                    st.metric("Good Agreement", summary_data.get('Good Agreement (0.6 ≤ AC1 < 0.8)', 'N/A'))
+                with cols[3]:
+                    avg_ac1 = summary_data.get('Average AC1 Score')
+                    if avg_ac1:
+                        st.metric("Average AC1", f"{avg_ac1:.2f}")
+                    else:
+                        st.metric("Average AC1", "N/A")
+
+            # Visualizations
+            if 'fig_data' in irr_results:
+                st.subheader("Visualizations")
+
+                tabs = st.tabs(["AC1 by Category", "Coding Prevalence", "Percent Agreement"])
+
+                fig_data = irr_results['fig_data']
+                with tabs[0]:
+                    if 'ac1_by_category' in fig_data:
+                        st.image(fig_data['ac1_by_category'])
+                    else:
+                        st.info("AC1 by Category visualization not available")
+
+                with tabs[1]:
+                    if 'coding_prevalence' in fig_data:
+                        st.image(fig_data['coding_prevalence'])
+                    else:
+                        st.info("Coding Prevalence visualization not available")
+
+                with tabs[2]:
+                    if 'percent_agreement' in fig_data:
+                        st.image(fig_data['percent_agreement'])
+                    else:
+                        st.info("Percent Agreement visualization not available")
+
+            # Detailed results table
+            if 'report_df' in irr_results and irr_results['report_df'] is not None:
+                st.subheader("Detailed Results")
+                st.dataframe(irr_results['report_df'], use_container_width=True)
+
+            # Download button
+            if 'report_path' in irr_results and os.path.exists(irr_results['report_path']):
+                st.download_button(
+                    label="Download Report (Excel)",
+                    data=open(irr_results['report_path'], "rb").read(),
+                    file_name="irr_analysis_report.xlsx",
+                    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                )
+        else:
+            st.info("No previous IRR analysis results available or last analysis failed.")
