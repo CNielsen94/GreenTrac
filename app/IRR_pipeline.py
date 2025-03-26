@@ -1159,7 +1159,7 @@ def run_irr_analysis(llm_data_path, nvivo_data_path, output_dir='output'):
     print("\nIRR analysis complete!")
     print("=" * 80)
     
-    return report_df, llm_clean, nvivo_clean, irr_results
+    return report_df, llm_clean, nvivo_clean, irr_results, report_path
 
 if __name__ == "__main__":
     print("Parsing arguments...")
