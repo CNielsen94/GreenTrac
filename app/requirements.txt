@@ -1,3 +1,10 @@
-docling
+docling # No longer needed
 google-generativeai
-streamlit
+streamlit  
+pandas    
+numpy      
+seaborn   
+matplotlib 
+requests  
+python-dotenv 
+google-genai
