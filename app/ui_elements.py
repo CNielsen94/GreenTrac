@@ -137,78 +137,57 @@ def render_how_to_tab():
     st.header("How to Use the Qualitative Coding Tool")
     
     st.markdown("""
-    This super duper cool interface helps researchers test and refine codebook definitions for qualitative coding, with a twist of entertainment. Here's how to use the application:
-    
-    ### Workflow Overview
-    
-    1. **Prepare codebook**: Just simply go to the github repository and edit the codebook_enhanced.json there
-    2. **Synchronize GitHub Codebook**: On the left you'll see a button "Refresh Codebook from GitHub". Press it to synchronize - you should see a message pop up underneath the button.
-    3. **File processing**: This is just a testing feature for the backend pipeline logic, you can ignore this for now. It will likely be removed later.
-    2. **Batch processing Documents**: Use batch processing for multiple documents
-    3. **Review Results**: Examine output in the Results tab, and perform IRR calculations in the IRR analysis tab.
+    This interface helps researchers test and refine codebook definitions for qualitative coding. Here's how to use the application:
                 
-        - The main difference here is the results tab give you the raw JSONs for each submission for review
-
-        - IRR analysis tab gives you the aggregated metric results from the analysis, as well as some visuals
-
-    4. **Refine Codebook**: Make changes to codebook comments and reprocess as needed
-        - This can be done either directly in the interface (hopefully it should work, haven't tested it)
-        - Or via the github repository (this definitely works, simply use the synchronize button as described earlier)
+    ### Main Workflow
     
-    ### API Key Configuration 
-    (**IGNORE THIS API-KEY SETUP, THIS ISN'T IMPLEMENTED CORRECTLY YET - THERE IS A DEFAULT KEY ALREADY ACTIVE, JUST RUN THE REST**)
+    #### 1. Batch Processing & Analysis
     
-    This tool uses Google's Gemini API to analyze PDF documents:
+    This is your primary workflow, combining document processing, IRR analysis, and experiment versioning:
     
-    1. **Enter in the sidebar**: Type your API key in the sidebar field (temporary, for this session only)
+    1. Go to the "Batch Processing & Analysis" tab
+    2. Enter an experiment name and notes (optional)
+    3. Click "Process & Analyze"
+    4. The system will:
+       - Process all PDF files
+       - Run IRR analysis 
+       - Save everything as a versioned experiment
+       - Provide download options
     
-    You can obtain a Gemini API key from [Google AI Studio](https://makersuite.google.com/)
+    #### 2. Experiment History
+    
+    Track progress across different codebook versions:
+    
+    - View all experiments
+    - Compare IRR scores between experiments
+    - Apply previous codebooks to new results (overwrites the current synchronized version with an experiment)
+    - Export experiments for sharing
+    
+    ### Additional Features
+    
+    #### Codebook Editor
+    
+    For editing the codebook definitions:
+    
+    1. Make changes to field definitions
+    2. Save changes
+    3. Run the Batch Processing workflow to test changes
     
     ### GitHub Integration
     
-    The codebook comments file can be synchronized with a GitHub repository (Default is GreenTrack, no need to enter it):
+    The codebook can be synchronized with GitHub:
                 
-    (**You can ignore this for now - this is just placeholder functionality. Just use the button without entering anything**)
-    1. Enable GitHub integration in the sidebar
-    2. Enter the raw URL to the GitHub version of the file
-    3. Click "Fetch from GitHub" to update your local version
-    4. Process documents with the updated codebook
+    1. Edit the codebook on GitHub
+    2. Click "Refresh Codebook from GitHub" in the sidebar
+    3. Process documents with the updated codebook
     
-    ### Batch Processing (Recommended)
+    ### Need Help?
     
-    (**The zip download hasn't been tested, but should work**)            
-
-    For processing multiple documents at once:
+    If you're unsure about any part of the application:
     
-    1. Go to the "Batch Processing" tab
-    2. You can review the list of available PDF files
-    3. Click "Process All Files" to analyze the entire set
-    4. When complete, you can download a ZIP of all results or review individual files in the Results tab
-    
-    ### Reviewing Results
-    
-    In the "Results" tab:
-    
-    1. Select a processed file from the dropdown 
-    2. Choose between Raw JSON view (complete data) or Tabular View (formatted for readability)
-    3. Download results for further analysis if desired
-    4. The IRR analysis tab provides with a better overview of the aggregated results, and agreement percentages
-    
-    ### Editing the Codebook
-    
-    To test different field definitions:
-    
-    1. Go to the "Codebook Editor" tab
-    2. Modify the descriptions in the JSON editor
-    3. Click "Save Changes" to update the file
-    4. Return to Processing tabs to test the changes
-    5. Let me know if this is broken, as I realize this will probably be easier to manage
-                
-    ### Future stuff:
-    1. **Fix versioning logic** - currently we don't save between runs, so please download and maintain the codebook definitions as they run for now.
-                I will try to sort out the logic asap
-    2. Add a feedback mechanism for users (you lovely folk) to provide quicker feedback for updates
-    3. Remove unused code categories - these are just an artifact of earlier experiments
+    1. Refer back to this How-To page
+    2. Check the documentation in each tab
+    3. Contact the administrator for assistance - he'll send a team of highly trained monkeys
     """)
 
 def render_file_processing_tab():
@@ -289,13 +268,12 @@ def render_file_processing_tab():
             st.error(f"The '{DOCS_FOLDER}' folder does not exist. Please create it and add PDF files.")
 
 def render_batch_processing_tab():
-    """Render the batch processing tab."""
-    st.header("Batch Process All Files")
+    """Render the batch processing tab with integrated IRR analysis."""
+    st.header("Batch Process & Analyze")
     
     st.info("""
-    This tab allows you to process all PDF files in the docs folder at once.
-    This is the recommended approach for analyzing multiple documents efficiently.
-    Results will be saved individually and can also be downloaded as a ZIP file when complete.
+    This tab processes all PDF files in the docs folder, performs IRR analysis, and saves everything as a single experiment.
+    Enter experiment details and click "Process & Analyze" to start.
     """, icon="ℹ️")
     
     codebook_template = load_codebook_template()
@@ -310,107 +288,311 @@ def render_batch_processing_tab():
                 for file in pdf_files:
                     st.write(f"- {file}")
                 
-                if st.button("Process All Files"):
-                    progress_bar = st.progress(0)
+                # Check if NVivo export exists
+                nvivo_path = "nvivo_export.csv"
+                nvivo_exists = os.path.exists(nvivo_path)
+                if not nvivo_exists:
+                    st.warning(f"NVivo export file ({nvivo_path}) not found. IRR analysis will be skipped.")
+                
+                # Combined form with metadata and process button
+                with st.form(key="experiment_form"):
+                    st.subheader("Experiment Information")
+                    exp_name = st.text_input("Experiment Name:", 
+                                           placeholder="e.g., Test Run 1 or Improved Microplastics Definitions")
+                    exp_notes = st.text_area("Experiment Notes (optional):", 
+                                           placeholder="Enter notes about this experiment (e.g., changes made to codebook)")
                     
-                    results = {}
-                    for i, filename in enumerate(pdf_files):
-                        file_path = os.path.join(DOCS_FOLDER, filename)
-                        st.write(f"Processing {filename} ({i+1}/{len(pdf_files)})")
+                    # Submit button for the combined form
+                    process_submitted = st.form_submit_button("Process & Analyze")
+                
+                # Process the files if the form was submitted
+                if process_submitted:
+                    if not exp_name:
+                        st.error("Please enter an experiment name before processing.")
+                    else:
+                        # Process all PDF files
+                        st.subheader("Step 1: Processing Documents")
+                        progress_bar = st.progress(0)
                         
-                        # API key handling is done within the function
-                        result = analyze_pdf_file(
-                            file_path, 
-                            codebook_template, 
-                            st.session_state.codebook_comments
-                        )
+                        results = {}
+                        for i, filename in enumerate(pdf_files):
+                            file_path = os.path.join(DOCS_FOLDER, filename)
+                            st.write(f"Processing {filename} ({i+1}/{len(pdf_files)})")
+                            
+                            # API key handling is done within the function
+                            result = analyze_pdf_file(
+                                file_path, 
+                                codebook_template, 
+                                st.session_state.codebook_comments
+                            )
+                            
+                            if result:
+                                results[filename] = result
+                                st.session_state.results[filename] = result
+                                if filename not in st.session_state.processed_files:
+                                    st.session_state.processed_files.append(filename)
+                                
+                                # Save result to file
+                                output_filename = os.path.splitext(file_path)[0] + "_codebook.json"
+                                with open(output_filename, 'w', encoding="utf-8") as outfile:
+                                    json.dump(result, outfile, indent=2, ensure_ascii=False)
+                                
+                                st.success(f"✓ {os.path.basename(output_filename)}")
+                            else:
+                                st.error(f"Failed to process {filename}")
+                            
+                            # Update progress
+                            progress_bar.progress((i + 1) / len(pdf_files))
                         
-                        if result:
-                            results[filename] = result
-                            st.session_state.results[filename] = result
-                            if filename not in st.session_state.processed_files:
-                                st.session_state.processed_files.append(filename)
-                            
-                            # Save result to file
-                            output_filename = os.path.splitext(file_path)[0] + "_codebook.json"
-                            with open(output_filename, 'w', encoding="utf-8") as outfile:
-                                json.dump(result, outfile, indent=2, ensure_ascii=False)
-                            
-                            st.success(f"Results saved to {os.path.basename(output_filename)}")
+                        st.success(f"Document processing complete. Processed {len(results)}/{len(pdf_files)} files.")
+                        
+                        # Run IRR analysis if possible
+                        irr_results = None
+                        if nvivo_exists and results:
+                            st.subheader("Step 2: Running IRR Analysis")
+                            try:
+                                with st.spinner("Preparing LLM data for IRR analysis..."):
+                                    # Get paths to the JSON files in the docs folder
+                                    json_file_paths = []
+                                    for filename in results.keys():
+                                        # The JSON file is in the same location as the PDF but with _codebook.json suffix
+                                        json_filename = os.path.splitext(filename)[0] + "_codebook.json"
+                                        json_path = os.path.join(DOCS_FOLDER, json_filename)
+                                        
+                                        if os.path.exists(json_path):
+                                            json_file_paths.append(json_path)
+                                        else:
+                                            st.warning(f"Could not find JSON file for {filename} at {json_path}")
+
+                                    # Only proceed if we found valid JSON files
+                                    if json_file_paths:
+                                        # Process JSON files into a DataFrame
+                                        from IRR_pipeline import process_json_files
+                                        st.info(f"Found {len(json_file_paths)} JSON files for IRR analysis")
+                                        llm_data_df = process_json_files(json_file_paths)
+                                        
+                                        if llm_data_df.empty:
+                                            st.error("Could not process JSON files into a usable DataFrame for IRR analysis.")
+                                        else:
+                                            # Save DataFrame to a temporary CSV file
+                                            temp_llm_csv_path = os.path.join(RESULTS_FOLDER, "temp_llm_data.csv")
+                                            llm_data_df.to_csv(temp_llm_csv_path, index=False)
+                                            
+                                            # Run IRR analysis
+                                            from irr_analysis import run_irr_analysis_for_streamlit
+                                            with st.spinner("Running IRR analysis..."):
+                                                irr_results = run_irr_analysis_for_streamlit(
+                                                    llm_data_path=temp_llm_csv_path,
+                                                    nvivo_data_path=nvivo_path,
+                                                    output_dir=RESULTS_FOLDER
+                                                )
+                                            
+                                            if irr_results:
+                                                st.session_state.irr_analysis = irr_results
+                                                st.success("IRR analysis completed successfully!")
+                                            else:
+                                                st.error("IRR analysis failed to complete.")
+                                    else:
+                                        st.error("No valid JSON files found for IRR analysis. Cannot proceed.")
+                            except Exception as e:
+                                import traceback
+                                st.error(f"Error running IRR analysis: {e}")
+                                st.code(traceback.format_exc())
                         else:
-                            st.error(f"Failed to process {filename}")
+                            if not nvivo_exists:
+                                st.info("Step 2: IRR Analysis (Skipped - NVivo export not found)")
+                            elif not results:
+                                st.info("Step 2: IRR Analysis (Skipped - No processing results)")
                         
-                        # Update progress
-                        progress_bar.progress((i + 1) / len(pdf_files))
-                    
-                    st.success(f"Batch processing complete. Processed {len(results)}/{len(pdf_files)} files.")
-                    
-                    # Create zip file with all results
-                    if results:
-                        zip_data = create_zip_from_results(results)
-                        st.download_button(
-                            label="Download All Results (ZIP)",
-                            data=zip_data,
-                            file_name="codebook_results.zip",
-                            mime="application/zip"
-                        )
+                        # Save everything as a single experiment
+                        st.subheader("Step 3: Saving Experiment")
+                        with st.spinner("Saving experiment..."):
+                            from ui_experiment_history import save_current_experiment
+                            experiment_id = save_current_experiment(
+                                results=results,
+                                notes=exp_notes,
+                                name=exp_name
+                            )
+                            
+                            if experiment_id:
+                                st.success(f"Experiment saved with ID: {experiment_id}")
+                                st.info("You can view experiment details in the 'Experiment History' tab.")
+                            else:
+                                st.error("Failed to save experiment.")
+                        
+                        # Create download links
+                        st.subheader("Step 4: Download Options")
+                        col1, col2 = st.columns(2)
+                        
+                        with col1:
+                            # Download results as ZIP
+                            if results:
+                                zip_data = create_zip_from_results(results)
+                                st.download_button(
+                                    label="Download Results (ZIP)",
+                                    data=zip_data,
+                                    file_name="codebook_results.zip",
+                                    mime="application/zip"
+                                )
+                        
+                        with col2:
+                            # Download IRR report if available
+                            if irr_results and 'report_path' in irr_results and os.path.exists(irr_results['report_path']):
+                                with open(irr_results['report_path'], "rb") as f:
+                                    st.download_button(
+                                        label="Download IRR Report (Excel)",
+                                        data=f.read(),
+                                        file_name="irr_analysis_report.xlsx",
+                                        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                                    )
+                        
+                        # Offer to navigate to results or experiment history
+                        st.subheader("Next Steps")
+                        col1, col2 = st.columns(2)
+                        
+                        with col1:
+                            if st.button("View Results Tab"):
+                                # Set a session state variable that the Results tab will check
+                                st.session_state.active_tab = "Results"
+                                st.experimental_rerun()
+                        
+                        with col2:
+                            if st.button("View Experiment History"):
+                                # Set a session state variable that will be checked to switch tabs
+                                st.session_state.active_tab = "Experiment History"
+                                st.experimental_rerun()
             else:
                 st.warning(f"No PDF files found in the '{DOCS_FOLDER}' folder.")
         else:
             st.error(f"The '{DOCS_FOLDER}' folder does not exist. Please create it and add PDF files.")
 
 def render_results_viewer_tab():
-    """Render the results viewer tab."""
+    """Render the results viewer tab with integrated IRR results."""
     st.header("Results Viewer")
     
     st.info("""
-    After processing files, use this tab to review the results.
-    Select a file from the dropdown and choose your preferred view mode.
-    You can download individual results as JSON files for further analysis.
+    This tab shows all processing results and IRR analysis from your most recent experiment.
+    Use the Experiment History tab to view results from previous experiments.
     """, icon="ℹ️")
     
-    if not st.session_state.processed_files:
-        st.info("No files have been processed yet. Use the 'File Processing' or 'Batch Processing' tab to analyze files.")
-    else:
-        # File selector
-        selected_file = st.selectbox(
-            "Select a processed file to view",
-            st.session_state.processed_files,
-            index=None,
-            placeholder="Choose a file..."
-        )
-        
-        if selected_file and selected_file in st.session_state.results:
-            st.subheader(f"Results for {selected_file}")
+    # Create tabs for different result types
+    doc_tab, irr_tab = st.tabs(["Document Processing Results", "IRR Analysis Results"])
+    
+    # Document Processing Results tab
+    with doc_tab:
+        if not st.session_state.processed_files:
+            st.info("No files have been processed yet. Use the 'Batch Processing & Analysis' tab to process files.")
+        else:
+            st.subheader("Processed Documents")
             
-            # View options
-            view_mode = st.radio(
-                "View Mode",
-                ["Raw JSON", "Tabular View"],
-                horizontal=True
+            # File selector
+            selected_file = st.selectbox(
+                "Select a processed file to view",
+                st.session_state.processed_files,
+                index=None,
+                placeholder="Choose a file..."
             )
             
-            result = st.session_state.results[selected_file]
-            
-            if view_mode == "Raw JSON":
-                st.json(result)
+            if selected_file and selected_file in st.session_state.results:
+                st.write(f"Viewing results for: **{selected_file}**")
                 
-            elif view_mode == "Tabular View":
-                # Create tabular view using DataFrame
-                df = create_dataframe_from_json(result)
-                if df is not None:
-                    st.dataframe(df, use_container_width=True)
-                else:
-                    st.error("Could not create tabular view. Showing raw JSON instead.")
+                # View options
+                view_mode = st.radio(
+                    "View Mode",
+                    ["Raw JSON", "Tabular View"],
+                    horizontal=True
+                )
+                
+                result = st.session_state.results[selected_file]
+                
+                if view_mode == "Raw JSON":
                     st.json(result)
+                    
+                elif view_mode == "Tabular View":
+                    # Create tabular view using DataFrame
+                    df = create_dataframe_from_json(result)
+                    if df is not None:
+                        st.dataframe(df, use_container_width=True)
+                    else:
+                        st.error("Could not create tabular view. Showing raw JSON instead.")
+                        st.json(result)
+                
+                # Download button
+                st.download_button(
+                    label="Download Results",
+                    data=json.dumps(result, indent=2, ensure_ascii=False),
+                    file_name=f"{os.path.splitext(selected_file)[0]}_codebook.json",
+                    mime="application/json"
+                )
+    
+    # IRR Analysis Results tab
+    with irr_tab:
+        if 'irr_analysis' not in st.session_state or not st.session_state.irr_analysis:
+            st.info("No IRR analysis results available. Run the 'Batch Processing & Analysis' workflow to generate IRR results.")
+        else:
+            st.subheader("Inter-Rater Reliability Analysis")
+            
+            irr_results = st.session_state.irr_analysis
+            
+            # Display summary metrics
+            if 'summary_data' in irr_results:
+                summary_data = irr_results['summary_data']
+                
+                st.markdown("### Agreement Quality")
+                
+                # Create metrics in a row
+                cols = st.columns(4)
+                with cols[0]:
+                    st.metric("Total Categories", summary_data.get('Total Categories', 'N/A'))
+                with cols[1]:
+                    st.metric("Excellent Agreement", summary_data.get('Excellent Agreement (AC1 ≥ 0.8)', 'N/A'))
+                with cols[2]:
+                    st.metric("Good Agreement", summary_data.get('Good Agreement (0.6 ≤ AC1 < 0.8)', 'N/A'))
+                with cols[3]:
+                    avg_ac1 = summary_data.get('Average AC1 Score')
+                    if avg_ac1:
+                        st.metric("Average AC1", f"{avg_ac1:.2f}")
+                    else:
+                        st.metric("Average AC1", "N/A")
+            
+            # Detailed results
+            if 'report_df' in irr_results and irr_results['report_df'] is not None:
+                st.markdown("### Detailed Category Scores")
+                st.dataframe(irr_results['report_df'], use_container_width=True)
+            
+            # Visualizations
+            st.markdown("### Visualizations")
+            
+            if 'fig_data' in irr_results:
+                viz_tabs = st.tabs(["AC1 by Category", "Coding Prevalence", "Percent Agreement"])
+                
+                fig_data = irr_results['fig_data']
+                with viz_tabs[0]:
+                    if 'ac1_by_category' in fig_data:
+                        st.image(fig_data['ac1_by_category'])
+                    else:
+                        st.info("AC1 by Category visualization not available")
+                
+                with viz_tabs[1]:
+                    if 'coding_prevalence' in fig_data:
+                        st.image(fig_data['coding_prevalence'])
+                    else:
+                        st.info("Coding Prevalence visualization not available")
+                
+                with viz_tabs[2]:
+                    if 'percent_agreement' in fig_data:
+                        st.image(fig_data['percent_agreement'])
+                    else:
+                        st.info("Percent Agreement visualization not available")
             
             # Download button
-            st.download_button(
-                label="Download Results",
-                data=json.dumps(result, indent=2, ensure_ascii=False),
-                file_name=f"{os.path.splitext(selected_file)[0]}_codebook.json",
-                mime="application/json"
-            )
+            if 'report_path' in irr_results and os.path.exists(irr_results['report_path']):
+                st.download_button(
+                    label="Download IRR Report (Excel)",
+                    data=open(irr_results['report_path'], "rb").read(),
+                    file_name="irr_analysis_report.xlsx",
+                    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                )
 
 def render_codebook_editor_tab():
     """Render the codebook editor tab."""
@@ -419,7 +601,7 @@ def render_codebook_editor_tab():
     st.info("""
     This tab allows you to edit the codebook comments (codebook_finetune.json) which determine how information is extracted.
     Make changes to test different definitions, save them, and then process documents to see how the changes affect results.
-    Changes are saved directly to the codebook_finetune.json file.
+    Changes are saved directly to the codebook_finetune.json file in the backend (not GitHub!).
     """, icon="ℹ️")
     
     if not st.session_state.codebook_comments:
@@ -737,8 +919,34 @@ def render_irr_analysis_tab():
                             st.session_state.irr_analysis = irr_results
 
                             st.success("IRR analysis completed successfully!")
-                            # ... (rest of the result display logic - summary, visualizations, table, download - remains largely the same as before)
-                            # ... (adjustments might be needed based on changes in run_irr_analysis_for_streamlit output if you made big changes)
+                            
+                            # Save the experiment with IRR results
+                            with st.expander("Save Experiment (Optional)", expanded=True):
+                                exp_name = st.text_input("Experiment Name (optional):", 
+                                                      placeholder="e.g., IRR Analysis Run 1",
+                                                      key="irr_exp_name")
+                                exp_notes = st.text_area("Experiment Notes (optional):", 
+                                                      placeholder="Enter any notes about this IRR analysis...",
+                                                      key="irr_exp_notes")
+                                
+                                if st.button("Save as Experiment"):
+                                    from ui_experiment_history import save_current_experiment
+                                    
+                                    # Get the processed results from session state
+                                    results = st.session_state.get('results', {})
+                                    
+                                    if results:
+                                        experiment_id = save_current_experiment(
+                                            results=results,
+                                            notes=exp_notes,
+                                            name=exp_name
+                                        )
+                                        
+                                        st.success(f"Experiment saved with ID: {experiment_id}")
+                                        st.info("You can view and compare this experiment in the 'Experiment History' tab.")
+                                    else:
+                                        st.warning("No processed results found to save with the experiment.")
+                            
                             # Show a summary of the results
                             st.subheader("Summary of IRR Analysis")
 
