@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 from pathlib import Path
 
 
-print("Script starting...")
+#print("Script starting...")
 
 def safe_extract_value(data, *keys, default=None):
     """
@@ -99,6 +99,7 @@ def process_json_files(file_paths_or_path):
     pd.DataFrame
         DataFrame containing the extracted data from all JSON files
     """
+    #print(f"DEBUGGING - process_json_files received: {file_paths_or_path}")
     # List to store data from each file
     all_data = []
     
@@ -1162,7 +1163,9 @@ def run_irr_analysis(llm_data_path, nvivo_data_path, output_dir='output'):
     return report_df, llm_clean, nvivo_clean, irr_results, report_path
 
 if __name__ == "__main__":
+    print("Script starting...")
     print("Parsing arguments...")
+
     import argparse
     
     parser = argparse.ArgumentParser(description='Run IRR analysis between LLM and NVivo data')
