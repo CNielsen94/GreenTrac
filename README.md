@@ -38,7 +38,7 @@ pip install -r requirements.txt
 4. Set up environment variables:
    * Create a `.env` file in the project root
    * Add your Google Gemini API key: `GOOGLE_API_KEY=your_key_here`
-   * (Optional) Set default admin credentials: `DEFAULT_ADMIN_USER=admin` and `DEFAULT_ADMIN_PASSWORD=secure_password`
+   * Set admin credentials: `DEFAULT_ADMIN_USER=admin` and `DEFAULT_ADMIN_PASSWORD=secure_password` (otherwise look in the auth.py script for the default login information)
 
 ## Usage
 
